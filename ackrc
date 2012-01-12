@@ -1,0 +1,6 @@
+--type-add=ruby=.haml
+--type-add=ruby=.rake
+--type-add=ruby=.feature
+--type-add=html=.haml
+--type-add=js=.js,.coffee
+--type-add=css=.sass,.scss
