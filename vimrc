@@ -24,6 +24,10 @@ syntax on
 set t_Co=256
 set guifont=Anonymous\ Pro:h18
 
+" Strip trailing whitespace
+autocmd BufWritePre * :%s/\s\+$//e
+
+
 " Solarized settings
 set background=dark
 colorscheme solarized
