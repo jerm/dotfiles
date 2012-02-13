@@ -23,10 +23,16 @@ syntax on
 " Syntax highlighting options
 set t_Co=256
 set guifont=Anonymous\ Pro:h18
+set number
 
 " Strip trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
+" Tab stuff
+set autoindent
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 
 " Solarized settings
 set background=dark

@@ -1,6 +1,3 @@
-# For android developer stuff
-export PATH=/usr/local/bin:$PATH:/Developer/SDKs/android-sdk-mac_x86/tools:/Developer/SDKs/android-sdk-mac_x86/platform-tools:/Users/mattrogish/src/mulberry/cli/bin:~/bin
-
 # Improve cuke runtime
 export RUBY_HEAP_MIN_SLOTS=1000000
 export RUBY_HEAP_SLOTS_INCREMENT=1000000
@@ -20,10 +17,4 @@ export GIT_PS1_SHOWSTASHSTATE=true
 
 PS1='\[\033[32m\]\u@\h\[\033[00m\]:\[\033[34m\]\w\[\033[31m\]$(__git_ps1)\[\033[00m\]\$ '
 
-export PATH=$PATH:/Users/mattrogish/src/mulberry/cli/bin
-
-
-export PATH=$PATH:/Users/mattrogish/src/mulberry/cli/bin
-
-
-export PATH=$PATH:/Users/mattrogish/src/mulberry/cli/bin
+export PATH=$PATH:/usr/local/bin:/Users/mattrogish/src/mulberry/cli/bin
