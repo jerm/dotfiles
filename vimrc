@@ -17,7 +17,6 @@ filetype plugin indent on
 
 
 " Load pathogen etc.
-call pathogen#infect()
 syntax on
 
 " Syntax highlighting options
