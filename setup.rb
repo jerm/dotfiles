@@ -7,7 +7,7 @@ home = File.expand_path('~')
 Dir['*'].each do |file|
   next if file =~ /setup|Preferences/
   target = File.join(home, ".#{file}")
-  # `ln -s #{File.expand_path file} #{target}`
+  `ln -s #{File.expand_path file} #{target}`
 end
 
 # Sublime text2 profile is in a weird location
