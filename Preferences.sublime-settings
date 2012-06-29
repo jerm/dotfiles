@@ -1,4 +1,7 @@
 {
 	"color_scheme": "Packages/Color Scheme - Default/Solarized (Dark).tmTheme",
-	"font_size": 18.0
+	"font_size": 18.0,
+    "font_face": "Anonymous Pro",
+    "tab_size": 2,
+    "translate_tabs_to_spaces": true    
 }
