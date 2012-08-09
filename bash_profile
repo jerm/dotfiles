@@ -2,6 +2,9 @@
 source ~/.git-completion.bash
 source ~/.git-config.bash
 
+# A few aliases for great justice
+alias gfr="git fetch && git rebase"
+
 export GIT_PS1_SHOWDIRTYSTATE=true
 export GIT_PS1_SHOWUNTRACKEDFILES=true
 export GIT_PS1_SHOWUPSTREAM=auto
