@@ -1,4 +1,4 @@
-# MattRogish's dotfiles
+# jermops's dotfiles
 
 These are my dotfiles. There are many that are like it, but these are mine.
 

@@ -1,0 +1,16 @@
+# This is a Mercurial configuration file.
+[ui]
+username = jeremy price mba <jprice@strausdigital.com>
+debug = false
+merge = vimdiff
+[merge-tools]
+vimdiff.executable = vim
+vimdiff.args = -d $base $local $output $other +close +close
+
+[extensions]
+fetch =
+[trusted]
+users = django,ubuntu
+
+[hostfingerprints]
+hg.strausdigital.com = AD:6C:08:F5:04:8D:91:5C:B4:E0:69:F1:ED:E3:D8:73:35:F7:5A:7B
