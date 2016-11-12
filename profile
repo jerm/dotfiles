@@ -1,6 +1,9 @@
 # Git prompt stuff
-source ~/.git-completion.bash
-source ~/.git-config.bash
+__git_ps1(){
+(:)
+}
+[ -f ~/.git-completion.bash ] && source ~/.git-completion.bash
+[ -f ~/.git-config.bash ] && source ~/.git-config.bash
 
 # A few aliases for great justice
 alias gfr="git fetch && git rebase"
@@ -26,7 +29,7 @@ ALERT_USER_COLOR=31
 NORMAL_USER_COLOR=32
  
 # Jeremy's boto and aws cli config unifyer/switcher
-cb(){
+cb-old(){
     set_default_boto(){
         unset BOTO_CONFIG
         unset BOTO_DISPLAYENV
@@ -63,8 +66,18 @@ cb(){
     fi
     [ -f .${BOTO_SEARCHENV}-env-setup ] && source .${BOTO_SEARCHENV}-env-setup
 }
+cb(){
+        export AWS_PROFILE=$1
+}
 #functinon to allow dynamic boto env in prompt
 _boto_env(){
+    if [ -n "$AWS_PROFILE" ]; then
+        echo "aws-$AWS_PROFILE"
+    else
+        echo -n "aws-default"
+    fi
+}
+_boto_env-old(){
     if [ -n "$BOTO_DISPLAYENV" ]; then
         echo "aws-$BOTO_DISPLAYENV"
     else
@@ -99,6 +112,17 @@ esac
  
 complete -C aws_completer aws
 alias crontab='crontab -i'
+alias ungron="gron --ungron"
+alias tf=terraform
+grepf(){
+    FINDPATH=${2:-'.'}
+    if [ -z "$3" ]; then
+        grep "$1" `find $FINDPATH -type f | grep -v .git`
+    else
+        grep "$1" `find $FINDPATH -type f | grep -v .git | grep -v "$3"`
+    fi
+}
+
 
 # Larger bash history (default is 500)
 export HISTFILESIZE=10000
@@ -123,8 +147,19 @@ ns() {
   tmux attach -t $1
 }
 
-export PATH=/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
-source /usr/local/bin/virtualenvwrapper.sh
+[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
+
+cb
+
+[ -f  ~/.bashrc ] && . ~/.bashrc
+[ -f .env-credentials ] && source .env-credentials
+get_ngrok()
+{
+    curl http://127.0.0.1:4040/api/tunnels 2>/dev/null| jq -r '.tunnels[]|select(.proto == "https")|.public_url'
+}
+
+[ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
 

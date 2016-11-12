@@ -1,14 +1,16 @@
-            " .vimrc                        
-execute pathogen#infect()
+" .vimrc
 
+execute pathogen#infect()
+"set list
+"set listchars=tab:▸·,eol:¬,nbsp:⎵
 "
 " Smylers's .vimrc
 " http://www.stripey.com/vim/
-" 
+"
 " 2000 Jun  1: for `Vim' 5.6
-" 
+"
 " This vimrc is divided into these sections:
-" 
+"
 " * Terminal Settings
 " * User Interface
 " * Text Formatting -- General
@@ -22,7 +24,7 @@ execute pathogen#infect()
 " * Keystrokes -- For HTML Files
 " * `SLRN' Behaviour
 " * Functions Referred to Above
-" 
+"
 " This file contains no control codes and no `top bit set' characters above the
 " normal Ascii range, and all lines contain a maximum of 79 characters.  With a
 " bit of luck, this should make it resilient to being uploaded, downloaded,
@@ -490,7 +492,7 @@ function! HighlightSpellingErrors()
 "
 " by Smylers  http://www.stripey.com/vim/
 " (inspired by Krishna Gadepalli and Neil Schemenauer's vimspell.sh)
-" 
+"
 " 2000 Jun 1: for `Vim' 5.6
 
   " for HTML files, remove all current syntax highlighting (so that
@@ -594,7 +596,7 @@ function! AddWordToDictionary()
 " the `Ispell' personal dictionary;
 "
 " by Smylers  http://www.stripey.com/vim/
-" 
+"
 " 2000 Apr 30: for `Vim' 5.6
 
   " get the word under the cursor, including the apostrophe as a word character
@@ -624,7 +626,7 @@ function! InsertCloseTag()
 " that I do;
 " doesn't treat <P> as something that needs closing;
 " clobbers register z and mark z
-" 
+"
 " by Smylers  http://www.stripey.com/vim/
 " 2000 May 4
 
@@ -690,9 +692,9 @@ function! RepeatTag(Forward)
 " above;
 " requires preservation of marks i and j;
 " clobbers register z
-" 
+"
 " by Smylers  http://www.stripey.com/vim/
-" 
+"
 " 2000 May 4: for `Vim' 5.6
 
   if &filetype == 'html'
@@ -749,7 +751,7 @@ autocmd InsertEnter * se cul   "unhighlight current line when not in insert mode
 
 " end of Smylers's .vimrc
 "colorscheme macvim
-set bg=light
+set bg=dark
 "#execute NERDTree
 "so ~/.vim/plugin/NERD_tree.vim
 "#autocmd FileType python set complete+=k~/.vim/syntax/python.vim isk+=.,(

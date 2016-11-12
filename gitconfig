@@ -1,22 +1,22 @@
 [user]
-    name = Jeremy Price
-    email = github@jerm.org
+	name = Jeremy Price
+	email = github@jerm.org
 
 [core]
     autocrlf = input
-	editor = "subl -w"
-    excludesfile = /Users/jerm/.gitignore_global
+	#editor = "subl -w"
+	excludesfile = /Users/jerm/.gitignore_global
 
 [mergetool]
 	keepBackup = true
 
 [difftool "sourcetree"]
-    cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-    path =
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
 
 [mergetool "sourcetree"]
-    cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-    trustExitCode = true
+	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
 
 [push]
     default = current
