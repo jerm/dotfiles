@@ -2,8 +2,21 @@
 __git_ps1(){
 (:)
 }
-[ -f ~/.git-completion.bash ] && source ~/.git-completion.bash
-[ -f ~/.git-config.bash ] && source ~/.git-config.bash
+#[ -f ~/.git-completion.bash ] && source ~/.git-completion.bash
+#[ -f ~/.git-config.bash ] && source ~/.git-config.bash
+# Activate git completion and prompt functions. My Linux has these built-in in
+# /etc/bash_completion.d/git
+# On OSX I'm using homebrew where they can be found as below.
+if [ "$(uname)" = "Darwin" ]; then
+  [ -f /usr/local/git/contrib/completion/git-prompt.sh ] && source /usr/local/git/contrib/completion/git-prompt.sh
+  [ -f /usr/local/git/contrib/completion/git-prompt.sh ] && source /usr/local/git/contrib/completion/git-completion.bash
+  [ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && source /usr/local/etc/bash_completion.d/git-completion.bash
+  [ -f /usr/local/etc/bash_completion.d/git-prompt.sh ] && source /usr/local/etc/bash_completion.d/git-prompt.sh
+  export NVM_DIR="$HOME/.nvm"
+  #. "$(brew --prefix nvm)/nvm.sh"
+  alias ls='ls -G'
+fi
+
 
 # A few aliases for great justice
 alias gfr="git fetch && git rebase"
@@ -29,57 +42,17 @@ ALERT_USER_COLOR=31
 NORMAL_USER_COLOR=32
  
 # Jeremy's boto and aws cli config unifyer/switcher
-cb-old(){
-    set_default_boto(){
-        unset BOTO_CONFIG
-        unset BOTO_DISPLAYENV
-        export AWS_CONFIG_FILE=~/.boto
-        echo "Using default .boto"
-    }
-    #Change boto env
-    unset found
-    BOTO_SEARCHENV=$1
-    if [ -n "$BOTO_SEARCHENV" ]; then
-        BOTO_SUFFIX="-$BOTO_SEARCHENV"
-    else
-        #Using default .boto... hopefully it exists"
-        set_default_boto
-        return 0
-    fi
-    # I one point ran into a scanario where it made sense to have .boto files
-    # within project folders... maybe it was before i made this script. At any
-    # rate, we support .boto files within the current folder and your $HOME
-    # folder, in that order.
-    for path in `pwd` $HOME
-    do
-        if [ -e "$path/.boto$BOTO_SUFFIX" ]; then
-            export BOTO_DISPLAYENV=${BOTO_SEARCHENV:-default}
-            export BOTO_CONFIG=$path/.boto$BOTO_SUFFIX
-            export AWS_CONFIG_FILE=$path/.boto$BOTO_SUFFIX
-            echo "Using $path/.boto$BOTO_SUFFIX"
-            found=1
-            break
-        fi
-    done
-    if [ -z "$found" ]; then
-        echo "#WARN: .boto$BOTO_SUFFIX not found. Not changing anything"
-    fi
-    [ -f .${BOTO_SEARCHENV}-env-setup ] && source .${BOTO_SEARCHENV}-env-setup
-}
 cb(){
-        export AWS_PROFILE=$1
+  if [ -z "$1" ]; then
+    unset AWS_PROFILE
+  else  
+    export AWS_PROFILE=$1
+  fi
 }
 #functinon to allow dynamic boto env in prompt
 _boto_env(){
     if [ -n "$AWS_PROFILE" ]; then
         echo "aws-$AWS_PROFILE"
-    else
-        echo -n "aws-default"
-    fi
-}
-_boto_env-old(){
-    if [ -n "$BOTO_DISPLAYENV" ]; then
-        echo "aws-$BOTO_DISPLAYENV"
     else
         echo -n "aws-default"
     fi
@@ -114,6 +87,7 @@ complete -C aws_completer aws
 alias crontab='crontab -i'
 alias ungron="gron --ungron"
 alias tf=terraform
+alias gl='git log --pretty=format:"%h%x09%an%x09%ad%x09%s" origin/production..'
 grepf(){
     FINDPATH=${2:-'.'}
     if [ -z "$3" ]; then
@@ -123,10 +97,10 @@ grepf(){
     fi
 }
 
-
 # Larger bash history (default is 500)
 export HISTFILESIZE=10000
 export HISTSIZE=10000
+export HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 
 BASH_ENV="$HOME/.bashrc"
@@ -149,17 +123,22 @@ ns() {
 
 export PATH=~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
-[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
-
-cb
 
 [ -f  ~/.bashrc ] && . ~/.bashrc
 [ -f .env-credentials ] && source .env-credentials
+[ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
+
+[ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
+
+[ -f /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion ] && source /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion
+for i in nylas jerm rhw
+do
+    [ -f ~/.profile-$i ] && source ~/.profile-$i ]
+done
+
 get_ngrok()
 {
     curl http://127.0.0.1:4040/api/tunnels 2>/dev/null| jq -r '.tunnels[]|select(.proto == "https")|.public_url'
 }
-
-[ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
 
