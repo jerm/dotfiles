@@ -34,8 +34,8 @@ set ruler
 " first clear any existing autocommands:
 autocmd!
 
-
-"set background=light
+set tabstop=2
+set background=dark
 "colorscheme solarized
 " * Terminal Settings
 
@@ -136,22 +136,11 @@ set comments+=fb:*
 " this very one!), and colons as well so that reformatting usenet messages from
 " `Tin' users works OK:
 set comments+=b:\"
-set comments+=n::
-
 
 " * Text Formatting -- Specific File Formats
 
 " enable filetype detection:
 filetype on
-
-" recognize anything in my .Postponed directory as a news article, and anything
-" at all with a .txt extension as being human-language text [this clobbers the
-" `help' filetype, but that doesn't seem to prevent help from working
-" properly]:
-augroup filetype
-  autocmd BufNewFile,BufRead */.Postponed/* set filetype=mail
-  autocmd BufNewFile,BufRead *.txt set filetype=human
-augroup END
 
 " in human-language files, automatically format everything at 72 chars:
 autocmd FileType mail,human set formatoptions+=t textwidth=72
@@ -176,7 +165,7 @@ autocmd FileType html set formatoptions+=tl
 
 " for both CSS and HTML, use genuine tab characters for indentation, to make
 " files a few bytes smaller:
-autocmd FileType html,css set noexpandtab tabstop=2
+autocmd FileType html,css set tabstop=2
 
 " in makefiles, don't expand tabs to spaces, since actual tab characters are
 " needed, and have indentation at 8 chars to be sure that all indents are tabs
@@ -216,6 +205,7 @@ set infercase
 
 " correct my common typos without me even noticing them:
 abbreviate teh the
+abbreviate jsut just
 abbreviate spolier spoiler
 abbreviate Comny Conmy
 abbreviate atmoic atomic

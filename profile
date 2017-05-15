@@ -45,8 +45,13 @@ NORMAL_USER_COLOR=32
 cb(){
   if [ -z "$1" ]; then
     unset AWS_PROFILE
+    unset ANSIBLE_CONFIG
+    unset ANSIBLE_INVENTORY
   else  
+    this_config=${1}_ansible_config
     export AWS_PROFILE=$1
+    export ANSIBLE_CONFIG=${!this_config}
+    export ANSIBLE_INVENTORY=/etc/ansible/$1/ec2.py
   fi
 }
 #functinon to allow dynamic boto env in prompt
@@ -73,7 +78,8 @@ case "$TERM" in
         
         # If we're using screen a compatible terminal, populate current tab
         # with hostname
-        [[ $TERM =~ "screen" ]] && export PS1="\[\033k\033\134\033k\h\033\134\]$PS1"
+        #[[ $TERM =~ "screen" ]] && 
+        export PS1="\[\033k\033\134\033k\h\033\134\]$PS1"
         
         # Add the top line with time, boto/aws env, path, git status, 
         # oh and make it red if the last command's return code is non-zero
@@ -104,7 +110,9 @@ export HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 
 BASH_ENV="$HOME/.bashrc"
-
+nylas_ansible_config=~/repos/ansible/ansible.cfg
+jermops_ansible_config=~/.ansible-jermops
+rhw_ansible_config=~/.ansible-rhw
 tmuxHashColor() {
   local hsh=$(echo $1 | cksum | cut -d ' ' -f 1)
   local num=$(expr $hsh % 255)
@@ -121,7 +129,7 @@ ns() {
   tmux attach -t $1
 }
 
-export PATH=~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=~/.local/bin:~/Library/Python/2.7/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 
@@ -132,6 +140,7 @@ export PATH=~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/s
 [ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
 
 [ -f /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion ] && source /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion
+[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 for i in nylas jerm rhw
 do
     [ -f ~/.profile-$i ] && source ~/.profile-$i ]
@@ -142,3 +151,8 @@ get_ngrok()
     curl http://127.0.0.1:4040/api/tunnels 2>/dev/null| jq -r '.tunnels[]|select(.proto == "https")|.public_url'
 }
 
+tmuxon()
+{
+  export PS1="\[\033k\033\134\033k\h\033\134\]$PS1"
+}
+[ -f ~/env-creds ] &&  eval `ansible-vault view env-creds`
