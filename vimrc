@@ -1,6 +1,7 @@
 " .vimrc
 
 execute pathogen#infect()
+set rtp+=/usr/local/bin/fzf
 "set list
 "set listchars=tab:▸·,eol:¬,nbsp:⎵
 "
@@ -738,6 +739,8 @@ endfunction " RepeatTag()
 
 autocmd InsertLeave * se nocul "highlight current line in insert mode
 autocmd InsertEnter * se cul   "unhighlight current line when not in insert mode
+autocmd Filetype gitcommit setlocal spell textwidth=72
+
 
 " end of Smylers's .vimrc
 "colorscheme macvim
