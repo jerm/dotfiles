@@ -93,7 +93,10 @@ complete -C aws_completer aws
 alias crontab='crontab -i'
 alias ungron="gron --ungron"
 alias tf=terraform
-alias gl='git log --pretty=format:"%h%x09%an%x09%ad%x09%s" origin/production..'
+#alias gl='git log --pretty=format:"%h%x09%an%x09%ad%x09%s" origin/production..'
+alias gl='git lg'
+alias glp='git lg -p'
+alias gdp='git lg origin/production..'
 grepf(){
     FINDPATH=${2:-'.'}
     if [ -z "$3" ]; then
