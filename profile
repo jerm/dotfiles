@@ -47,11 +47,13 @@ cb(){
     unset AWS_PROFILE
     unset ANSIBLE_CONFIG
     unset ANSIBLE_INVENTORY
+    unset ANSIBLE_VAULT_PASSWORD_FILE
   else  
     this_config=${1}_ansible_config
     export AWS_PROFILE=$1
     export ANSIBLE_CONFIG=${!this_config}
     export ANSIBLE_INVENTORY=/etc/ansible/$1/ec2.py
+    export ANSIBLE_VAULT_PASSWORD_FILE=~/dotfiles-private/ansible_vault_pass.$1
   fi
 }
 #functinon to allow dynamic boto env in prompt
@@ -113,9 +115,14 @@ export HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 
 BASH_ENV="$HOME/.bashrc"
-nylas_ansible_config=~/repos/ansible/ansible.cfg
-jermops_ansible_config=~/.ansible-jermops
-rhw_ansible_config=~/.ansible-rhw
+
+export nylas_ansible_config=~/repos/ansible/ansible.cfg
+export jermops_ansible_config=~/.ansible-jermops
+export rhw_ansible_config=~/.ansible-rhw
+export JERMOPS_BASTION=web.jerm.org
+
+alias webshare='python -m SimpleHTTPServer'
+
 tmuxHashColor() {
   local hsh=$(echo $1 | cksum | cut -d ' ' -f 1)
   local num=$(expr $hsh % 255)
