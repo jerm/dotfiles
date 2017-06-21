@@ -139,7 +139,7 @@ ns() {
   tmux attach -t $1
 }
 
-export PATH=~/.local/bin:~/Library/Python/2.7/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=~/src/arcanist/arcanist/bin:~/.local/bin:~/Library/Python/2.7/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
 
