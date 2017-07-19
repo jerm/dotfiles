@@ -1,4 +1,5 @@
 # Git prompt stuff
+echo .profile
 __git_ps1(){
 (:)
 }
@@ -53,7 +54,12 @@ cb(){
     export AWS_PROFILE=$1
     export ANSIBLE_CONFIG=${!this_config}
     export ANSIBLE_INVENTORY=/etc/ansible/$1/ec2.py
-    export ANSIBLE_VAULT_PASSWORD_FILE=~/dotfiles-private/ansible_vault_pass.$1
+    if [ -f ~/dotfiles-private/ansible_vault_pass.$1 ]; then
+        export ANSIBLE_VAULT_PASSWORD_FILE=~/dotfiles-private/ansible_vault_pass.$1
+    else
+        PLACEHOLDER=$1_ANSIBLE_VAULT_PASSWORD_FILE   
+        export ANSIBLE_VAULT_PASSWORD_FILE=${!PLACEHOLDER}
+    fi
   fi
 }
 #functinon to allow dynamic boto env in prompt
@@ -111,7 +117,8 @@ grepf(){
 # Larger bash history (default is 500)
 export HISTFILESIZE=10000
 export HISTSIZE=10000
-export HISTCONTROL="erasedups:ignoreboth"
+#export HISTCONTROL="erasedups:ignoreboth"
+export HISTCONTROL="ignoredups"
 shopt -s histappend
 
 BASH_ENV="$HOME/.bashrc"
@@ -151,6 +158,7 @@ export PATH=~/src/arcanist/arcanist/bin:~/.local/bin:~/Library/Python/2.7/bin:~/
 
 [ -f /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion ] && source /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+[ -f /usr/local/opt/autoenv/activate.sh ] && source /usr/local/opt/autoenv/activate.sh
 for i in nylas jerm rhw
 do
     [ -f ~/.profile-$i ] && source ~/.profile-$i ]
@@ -165,4 +173,12 @@ tmuxon()
 {
   export PS1="\[\033k\033\134\033k\h\033\134\]$PS1"
 }
-[ -f ~/env-creds ] &&  eval `ansible-vault view env-creds`
+#[ -f ~/env-creds ] &&  eval `ansible-vault view env-creds`
+
+###
+# App path Overrides
+###
+export PATH=$PATH:/usr/local/opt/go/libexec/bin
+export PATH="/usr/local/opt/sqlite/bin:$PATH"
+export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
+
