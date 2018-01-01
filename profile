@@ -272,3 +272,4 @@ alias jmosh='tab-color 104 65 244; mosh'
 alias nmosh='tab-color 0 200 120; mosh bastion.nylas.com'
 alias rmosh='tab-color 63 168 244; mosh jumpprod'
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
