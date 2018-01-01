@@ -181,4 +181,5 @@ tmuxon()
 export PATH=$PATH:/usr/local/opt/go/libexec/bin
 export PATH="/usr/local/opt/sqlite/bin:$PATH"
 export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-
+# Go related stuff
+export GOPATH=~/.go
