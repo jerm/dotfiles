@@ -1,3 +1,4 @@
+#!/bin/bash
 # Git prompt stuff
 echo .profile
 __git_ps1(){
@@ -20,7 +21,22 @@ fi
 
 
 # A few aliases for great justice
+alias g='git'
+alias gs='git status'
+alias gdl='git difflog'
+alias gco="git checkout"
 alias gfr="git fetch && git rebase"
+alias gua="git update-all"
+alias cjw='git checkout jermwork'
+alias grm='git rebase master'
+alias gppi='git push --force origin production-infra'
+alias gpom='git push origin master'
+alias grhm='git reset --hard master'
+alias grhj='git reset --hard jermwork'
+alias la='ls -la'
+alias ll='ls -l'
+alias ltr='ls -ltr'
+alias latr='ls -latr'
 
 export GIT_PS1_SHOWDIRTYSTATE=true
 export GIT_PS1_SHOWUNTRACKEDFILES=true
@@ -54,7 +70,7 @@ cb(){
     export AWS_PROFILE=$1
     export ANSIBLE_CONFIG=${!this_config}
     export ANSIBLE_INVENTORY=/etc/ansible/$1/ec2.py
-    if [ -f ~/dotfiles-private/ansible_vault_pass.$1 ]; then
+    if [ -f "$HOME/dotfiles-private/ansible_vault_pass.$1" ]; then
         export ANSIBLE_VAULT_PASSWORD_FILE=~/dotfiles-private/ansible_vault_pass.$1
     else
         PLACEHOLDER=$1_ANSIBLE_VAULT_PASSWORD_FILE   
@@ -75,8 +91,8 @@ _boto_env(){
 case "$TERM" in
     xterm*|rxvt*|screen*|linux)
         # Decide username and servername colors
-        if [[ "`hostname`" =~ $PROD_HOST_TRIGGER ]]; then HCOLOR=$PROD_HOST_COLOR; else HCOLOR=$NORMAL_HOST_COLOR; fi
-        if [[ "$USER" =~ "$ALERT_USER_NAME" ]]; then UCOLOR=$ALERT_USER_COLOR; else UCOLOR=$NORMAL_USER_COLOR; fi
+        if [[ "$(hostname)" =~ $PROD_HOST_TRIGGER ]]; then HCOLOR=$PROD_HOST_COLOR; else HCOLOR=$NORMAL_HOST_COLOR; fi
+        if [[ "$USER" =~ $ALERT_USER_NAME ]]; then UCOLOR=$ALERT_USER_COLOR; else UCOLOR=$NORMAL_USER_COLOR; fi
         
         #Set up the bottom line with user@host:commandnum:$path
         PS1='\[\033[01;${UCOLOR}m\]\u@\[\033[01;${HCOLOR}m\]\h\[\033[00m\]:\!:\[\033[00m\]\$ '
@@ -108,9 +124,9 @@ alias gdp='git lg origin/production..'
 grepf(){
     FINDPATH=${2:-'.'}
     if [ -z "$3" ]; then
-        grep "$1" `find $FINDPATH -type f | grep -v .git`
+        grep "$1" $(find "$FINDPATH" -type f | grep -v .git | grep -v '.mypy_cache')
     else
-        grep "$1" `find $FINDPATH -type f | grep -v .git | grep -v "$3"`
+        grep "$1" $(find "$FINDPATH" -type f | grep -v .git | grep -v '.mypy_cache' | grep -v "$3")
     fi
 }
 
@@ -123,10 +139,11 @@ shopt -s histappend
 
 BASH_ENV="$HOME/.bashrc"
 
-export nylas_ansible_config=~/repos/ansible/ansible.cfg
+export nylas_ansible_config=~/repos/cloud-core/nylas/infrastructure/ansible.cfg
 export jermops_ansible_config=~/.ansible-jermops
 export rhw_ansible_config=~/.ansible-rhw
 export JERMOPS_BASTION=web.jerm.org
+export EDITOR=vim
 
 alias webshare='python -m SimpleHTTPServer'
 
@@ -136,11 +153,11 @@ tmuxHashColor() {
   echo "colour$num"
 }
 ns() {
-  if [ -z $1 ]; then
-    1=$(basename $(pwd))
+  if [ -z "$1" ]; then
+    1="$(basename "$(pwd)")"
   fi
-  tmux new-session -d -s $1
-  local color=$(tmuxHashColor $1)
+  tmux new-session -d -s "$1"
+  local color="$(tmuxHashColor $1)"
   tmux send-keys -t $1 "tmux set-option status-bg $color" C-m
   tmux send-keys -t $1 "clear" C-m
   tmux attach -t $1
@@ -148,20 +165,20 @@ ns() {
 
 export PATH=~/src/arcanist/arcanist/bin:~/.local/bin:~/Library/Python/2.7/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function
-
-[ -f  ~/.bashrc ] && . ~/.bashrc
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM function
+[[ $(uname) == 'Darwin' ]] && export PATH=/usr/local/opt/python/libexec/bin:${PATH}
+[ -f  ~/.bashrc ] && source ~/.bashrc
 [ -f .env-credentials ] && source .env-credentials
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 
 [ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
 
 [ -f /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion ] && source /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion
-[ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+[ -f /usr/local/etc/profile.d/autojump.sh ] && source /usr/local/etc/profile.d/autojump.sh
 [ -f /usr/local/opt/autoenv/activate.sh ] && source /usr/local/opt/autoenv/activate.sh
 for i in nylas jerm rhw
 do
-    [ -f ~/.profile-$i ] && source ~/.profile-$i ]
+    [ -f "$HOME/.profile-$i" ] && source "$HOME/.profile-$i" 
 done
 
 get_ngrok()
@@ -175,6 +192,13 @@ tmuxon()
 }
 #[ -f ~/env-creds ] &&  eval `ansible-vault view env-creds`
 
+# Wordaround for stupid browsers quietly adding scheme:// when copying a url
+# from address bar
+whois()
+{ 
+    /usr/bin/whois $(echo $1 | sed -e 's%[https]*://\(.*\)/%\1%');
+}
+
 ###
 # App path Overrides
 ###
@@ -183,3 +207,68 @@ export PATH="/usr/local/opt/sqlite/bin:$PATH"
 export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
 # Go related stuff
 export GOPATH=~/.go
+
+### Ansible vault grepping
+export VAULTS_LIST_FILE='.vaults.txt'
+vaultscan()
+{
+    echo "Scanning `pwd` for ansible-vault files"
+    [ -n "$VAULTSCANBASE" ] && pushd "$VAULSCANBASE"
+    true > $VAULTS_LIST_FILE
+    IFS=$'\n'
+    set -f
+    for i in `find . -type f`
+    do
+       if head -1 "$i" | grep -q '$ANSIBLE_VAULT'; then
+           echo "Found vault $i"
+           echo "$i" >> $VAULTS_LIST_FILE
+       fi
+    done
+    set +f 
+    [ -n "$VAULTSCANBASE" ] && popd
+}
+
+_vaultgrep(){
+
+    _searchfor="$1"
+    _vaultfile="$2"
+
+    OUTPUT=$(ansible-vault view "$_vaultfile" | grep "$_searchfor")
+
+    if [ -n "$OUTPUT" ]; then
+        echo
+        echo "$_vaultfile:$OUTPUT"
+    else
+        echo -n '.'
+    fi
+}
+vaultgrep()
+{
+    [ -z "$1" ] && echo "# ERROR: Need a search string!" && return 1
+    searchfor="$1"
+    if [ -z "$2" ]; then
+        [ -n "$VAULTSCANBASE" ] && pushd "$VAULSCANBASE"
+        [ -f "$VAULTS_LIST_FILE" ] || vaultscan
+        while read -r vaultfile
+        do
+            _vaultgrep "$searchfor" "$vaultfile"
+        done < $VAULTS_LIST_FILE
+        [ -n "$VAULTSCANBASE" ] && popd
+    else
+        vaultfile="$2"
+        _vaultgrep "$searchfor" "$vaultfile"
+    fi
+}
+
+tab-color() {
+    echo -ne "\033]6;1;bg;red;brightness;$1\a"
+    echo -ne "\033]6;1;bg;green;brightness;$2\a"
+    echo -ne "\033]6;1;bg;blue;brightness;$3\a"
+}
+tab-reset() {
+    echo -ne "\033]6;1;bg;*;default\a"
+}
+alias jmosh='tab-color 104 65 244; mosh'
+alias nmosh='tab-color 0 200 120; mosh bastion.nylas.com'
+alias rmosh='tab-color 63 168 244; mosh jumpprod'
+

@@ -1,9 +1,36 @@
 " .vimrc
+set runtimepath+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'Shougo/neocomplete.vim'  " completion menus
+Plugin 'scrooloose/syntastic'    " highlight incorrect syntax in red
+
+Plugin 'wincent/command-t'       " fuzzy finder
+Plugin 'bronson/vim-crosshairs'  " only show cursorcolumn/line on active buffer
+Plugin 'bling/vim-airline'       " fancy modeline
+Plugin 'vim-airline/vim-airline-themes' " airline themes
+Plugin 'mhinz/vim-signify'       " display VCS info
+
+" assorted languages
+Plugin 'pearofducks/ansible-vim' " ansible
+Plugin 'fatih/vim-go'            " go
+"Plugin 'elixir-lang/vim-elixir'  " elixir
+"Plugin 'ElmCast/elm-vim'         " elm
+
+Plugin 'godlygeek/tabular'       " required for vim-markdown
+Plugin 'plasticboy/vim-markdown' " markdown syntax highlighting
+
+Plugin 'tpope/vim-speeddating'
+Plugin 'jceb/vim-orgmode'
+
+Plugin 'ayu-theme/ayu-vim'
+call vundle#end()
+filetype plugin indent on
 
 execute pathogen#infect()
 set rtp+=/usr/local/bin/fzf
 "set list
-"set listchars=tab:▸·,eol:¬,nbsp:⎵
+set listchars=tab:▸·,eol:¬,nbsp:⎵
 "
 " Smylers's .vimrc
 " http://www.stripey.com/vim/
@@ -166,7 +193,7 @@ autocmd FileType html set formatoptions+=tl
 
 " for both CSS and HTML, use genuine tab characters for indentation, to make
 " files a few bytes smaller:
-autocmd FileType html,css set tabstop=2
+autocmd FileType html,css set tabstop=2 expandtab
 
 " in makefiles, don't expand tabs to spaces, since actual tab characters are
 " needed, and have indentation at 8 chars to be sure that all indents are tabs

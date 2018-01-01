@@ -1,7 +1,7 @@
 echo .bash_profile
 for file in ~/.bashrc.d/*.bashrc;
 do
-     source “$file”
+     source "$file"
 done
 source ~/.profile
 #LUNCHY_DIR=$(dirname `gem which lunchy`)/../extras
