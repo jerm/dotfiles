@@ -1,0 +1,29 @@
+echo "begin nylas profile"
+export NYLAS_ANSIBLE_VAULT_PASSWORD_FILE=~/repos/cloud-core/nylas/infrastructure/vault-password-file.txt
+export PATH=~/repos/cloud-core/nylas/infrastructure/scripts:$PATH
+
+omnidash ()
+{
+    LEVEL="$1"
+    [ -n "$2" ] && REGION="-r $2"
+    for i in $(nylas instances omniproxy $LEVEL $REGION | grep omniproxy | awk '{print $4}');
+    do
+        open "http://$i:1936";
+    done
+}
+nfab(){
+    pushd /Users/jerm/repos/cloud-core/nylas/infrastructure/scripts
+    /Users/jerm/repos/cloud-core/.venv/bin/fab $@
+    popd
+}
+
+ntab()
+{
+    tab-color 0 200 120
+}
+nssh(){
+    tmp="${1//*10-/10.}"
+    ip="${tmp//-/.}"
+    ssh $ip $2 $3 $4 $5 $6
+}
+echo "nylas-profile"

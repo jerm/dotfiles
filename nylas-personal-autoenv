@@ -1,0 +1,11 @@
+cb nylas
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+export AWS_DEFAULT_REGION="us-west-2"
+export ANSIBLE_VAULT_PASSWORD_FILE=/Users/jerm/repos/cloud-core/nylas/infrastructure/vault-password-file.txt
+export ANSIBLE_CONFIG=/Users/jerm/repos/cloud-core/nylas/infrastructure/ansible.cfg
+export NYLAS_CLI_LOGLEVEL=30
+ntab
+czi(){ nylas instances "$1" "$2" -v | grep -v Fetching | awk '{print $9'} | sort | uniq -c;}
+
