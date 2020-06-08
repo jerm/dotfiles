@@ -24,6 +24,7 @@ Plugin 'tpope/vim-speeddating'
 Plugin 'jceb/vim-orgmode'
 
 Plugin 'ayu-theme/ayu-vim'
+Plugin 'ntpeters/vim-better-whitespace'  " realtime whitespace highlighting
 call vundle#end()
 filetype plugin indent on
 
@@ -60,7 +61,18 @@ set listchars=tab:▸·,eol:¬,nbsp:⎵
 set ruler
 
 " first clear any existing autocommands:
+
 autocmd!
+:set number relativenumber
+
+:augroup numbertoggle
+:  autocmd!
+:  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+:  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+:augroup END
+
+command! NN set number! relativenumber!
+
 
 set tabstop=2
 set background=dark
@@ -768,6 +780,10 @@ autocmd InsertLeave * se nocul "highlight current line in insert mode
 autocmd InsertEnter * se cul   "unhighlight current line when not in insert mode
 autocmd Filetype gitcommit setlocal spell textwidth=72
 
+function PbCopy() range
+  echo system('echo '.shellescape(join(getline(a:firstline, a:lastline), "\n")).'| pbcopy')
+endfunction
+com -range=% -nargs=0 Copy :<line1>,<line2>call PbCopy()
 
 " end of Smylers's .vimrc
 "colorscheme macvim
