@@ -4,15 +4,19 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'Shougo/neocomplete.vim'  " completion menus
 Plugin 'scrooloose/syntastic'    " highlight incorrect syntax in red
-
+Plugin 'nvie/vim-flake8' 
 Plugin 'wincent/command-t'       " fuzzy finder
 Plugin 'bronson/vim-crosshairs'  " only show cursorcolumn/line on active buffer
 Plugin 'bling/vim-airline'       " fancy modeline
 Plugin 'vim-airline/vim-airline-themes' " airline themes
 Plugin 'mhinz/vim-signify'       " display VCS info
+Plugin 'tpope/vim-fugitive'     " git commands Gblame, etc..
+Plugin 'tpope/vim-rhubarb'      " guthub integration for fugitive
 
 " assorted languages
 Plugin 'pearofducks/ansible-vim' " ansible
+Plugin 'Valloric/YouCompleteMe'
+
 Plugin 'fatih/vim-go'            " go
 "Plugin 'elixir-lang/vim-elixir'  " elixir
 "Plugin 'ElmCast/elm-vim'         " elm
@@ -62,6 +66,8 @@ set ruler
 
 " first clear any existing autocommands:
 
+:set foldlevel=19
+
 autocmd!
 :set number relativenumber
 
@@ -106,6 +112,9 @@ if &term =~ 'xterm'
 
   endif
 endif
+
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 
 " * User Interface
@@ -321,6 +330,12 @@ nnoremap <C-P> :prev<CR>
 
 " have % bounce between angled brackets, as well as t'other kinds:
 set matchpairs+=<:>
+
+"split navigations
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " have <F1> prompt for a help topic, rather than displaying the introduction
 " page, and have it do this from any mode:

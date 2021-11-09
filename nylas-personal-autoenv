@@ -1,3 +1,31 @@
+export NYLAS_ANSIBLE_VAULT_PASSWORD_FILE=~/repos/cloud-core/nylas/infrastructure/vault-password-file.txt
+export PATH=~/repos/cloud-core/nylas/infrastructure/scripts:$PATH
+
+omnidash ()
+{
+    LEVEL="$1"
+    [ -n "$2" ] && REGION="-r $2"
+    for i in $(nylas instances omniproxy $LEVEL $REGION | grep omniproxy | awk '{print $4}');
+    do
+        open "http://$i:1936";
+    done
+}
+nfab(){
+    pushd /Users/jerm/repos/cloud-core/nylas/infrastructure/scripts
+    /Users/jerm/repos/cloud-core/.venv/bin/fab $@
+    popd
+}
+
+ntab()
+{
+    tab-color 0 200 120
+}
+nssh(){
+    tmp="${1//*10-/10.}"
+    ip="${tmp//-/.}"
+    ssh $ip $2 $3 $4 $5 $6
+}
+
 cb nylas
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
@@ -8,4 +36,17 @@ export ANSIBLE_CONFIG=/Users/jerm/repos/cloud-core/nylas/infrastructure/ansible.
 export NYLAS_CLI_LOGLEVEL=30
 ntab
 czi(){ nylas instances "$1" "$2" -v | grep -v Fetching | awk '{print $9'} | sort | uniq -c;}
+redwood()
+{
 
+mysql -h 127.0.0.1 -u redwood redwood -p`sudo jq '.MYSQL_PASSWORD' -r /etc/inboxapp/redwood.json`
+
+}
+
+
+syncrestart()
+{
+nssh $1 'sudo  sv force-stop /etc/sv/*; sudo /etc/init.d/proxysql stop; sudo /etc/in  it.d/proxysql start; sudo sv start /etc/sv/*'
+}
+
+alias ntest='TZ=Etc/UTC NYLAS_ENV=test nylas test'

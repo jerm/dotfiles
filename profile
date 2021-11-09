@@ -1,4 +1,6 @@
 #!/bin/bash
+export AUTOENV_ENV_FILENAME=".autoenv"
+
 # Git prompt stuff
 echo .profile
 __git_ps1(){
@@ -11,7 +13,7 @@ __git_ps1(){
 # On OSX I'm using homebrew where they can be found as below.
 if [ "$(uname)" = "Darwin" ]; then
   # bash 4 completion
-  if [ ${BASH_VERSINFO[0]} -eq '4' ]; then
+  if [ ${BASH_VERSINFO[0]} -gt '3' ]; then
     [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
   elif [ ${BASH_VERSINFO[0]} -eq '3' ]; then
     [ -f /usr/local/git/contrib/completion/git-prompt.sh ] && source /usr/local/git/contrib/completion/git-prompt.sh
@@ -48,27 +50,30 @@ alias gg='git grep'
 alias gd='git diff'
 alias gb='git branch'
 alias gdl='git difflog'
-alias gdlm='git difflog master'
+alias gdlm='git difflog main'
 alias gco="git checkout"
-alias gcm="git checkout master"
-alias gdm="git diff  master"
+alias gcm="git checkout main"
+alias gdm="git diff main"
+alias gpa='git log -p -S'
+alias gpr="git pull-request -p -o"
+alias gprd="git pull-request -p -o -b develop"
 alias gpru="git pull-request -p -o -r nylas/unicorn-infrastructure -l infra"
 alias gci="git checkout production-infra"
 alias gfr="git fetch && git rebase"
 alias gua="git update-all"
-alias gpr="git pull-request -p -o"
 alias gprd="git pull-request -p -o -d"
 alias cjw='git checkout jermwork'
-alias grm='git rebase master'
+alias grm='git rebase main'
 alias gppi='git push --force origin production-infra'
-alias gpom='git push origin master'
-alias grhm='git reset --hard master'
+alias gpom='git push origin main'
+alias grhm='git reset --hard main'
 alias grhj='git reset --hard jermwork'
 alias gl='git lg'
 alias glp='git lg -p'
 alias gdp='git lg origin/production..'
-alias yolo='gua && grm && gco master && grhj && gpom'
-alias yoloprod='gua && grm && gco master && grhj && gpom && gco production-infra && grhm && gppi'
+alias gpl='for branch in `git branch --merged  | grep -v \* | egrep -v " (master|main|develop)$"`; do git branch -d "$branch"; done'
+alias yolo='gua && grm && gco main && grhj && gpom'
+alias yoloprod='gua && grm && gco main && grhj && gpom && gco production-infra && grhm && gppi'
 alias git-undo-commit='git reset --soft HEAD~1'
 __git_complete g __git_main
 __git_complete gco _git_checkout
@@ -78,6 +83,7 @@ alias la='ls -la'
 alias ll='ls -l'
 alias ltr='ls -ltr'
 alias latr='ls -latr'
+alias ff="find .  -and -not -ipath '*.terraform/*' -name"
     # Use protection
 alias crontab='crontab -i'
 alias ungron="gron --ungron"
@@ -90,6 +96,8 @@ alias webshare='python2 -m SimpleHTTPServer'
 alias jmosh='tab-color 104 65 244; mosh'
 alias nmosh='tab-color 0 200 120; mosh bastion.nylas.com'
 alias rmosh='tab-color 63 168 244; mosh jumpprod'
+alias gmosh='tab-color 250 100 200; mosh'
+
     # Maintenance
 alias updatehome='cb jerm; ~/bin/update-r53-rr.py --fqdn home.jerm.org --ip `http ipinfo.io | jq ".ip" -r`'
 
@@ -175,7 +183,7 @@ case "$TERM" in
         ;;
 esac
 
-alias grepr='grep -r --exclude-dir .mypy_cache --exclude-dir .git'
+alias grepr='grep -r --exclude-dir .mypy_cache --exclude-dir .git --exclude-dir .terraform'
 alias grepf=grepr
 
 old_grepf(){
@@ -218,6 +226,7 @@ tmuxHashColor() {
   local num=$(expr $hsh % 255)
   echo "colour$num"
 }
+
 ns() {
   if [ -z "$1" ]; then
     1="$(basename "$(pwd)")"
@@ -229,25 +238,30 @@ ns() {
   tmux attach -t $1
 }
 
-export PATH=~/src/arcanist/arcanist/bin:~/.local/bin:~/Library/Python/2.7/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
+#export PATH=~/src/arcanist/arcanist/bin:~/.local/bin:~/Library/Python/2.7/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=~/.local/bin:~/.go/bin:/usr/local/sbin:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM function
 [[ $(uname) == 'Darwin' ]] && export PATH=/usr/local/opt/python/libexec/bin:${PATH}
 [ -f  ~/.bashrc ] && source ~/.bashrc
-#set -x
 [ -f .env-credentials ] && source .env-credentials
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 
-[ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
 
-[ -f /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion ] && source /Users/jerm/arcanist_base/arcanist/resources/shell/bash-completion
+
+# Bashmarks looks interesting: https://github.com/huyng/bashmarks
+# but have been using autojump below:
+# [ -f /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh ] && source /Users/jerm/Documents/Dropbox/config/bashmarks/bashmarks.sh
+
+
 [ -f /usr/local/etc/profile.d/autojump.sh ] && source /usr/local/etc/profile.d/autojump.sh
 [ -f /usr/local/opt/autoenv/activate.sh ] && source /usr/local/opt/autoenv/activate.sh
 
-for i in nylas jerm rhw
-do
-    [ -f "$HOME/.profile-$i" ] && source "$HOME/.profile-$i"
-done
+# handling this in .$PLACE-personal-autoenv files now
+#for i in nylas jerm rhw
+#do
+#    [ -f "$HOME/.profile-$i" ] && source "$HOME/.profile-$i"
+#done
 
 get_ngrok()
 {
@@ -258,6 +272,11 @@ tmuxon()
 {
   export PS1="\[\033k\033\134\033k\h\033\134\]$PS1"
 }
+
+
+# Experiment with keeping any env-var keys in a vault to keep them out of
+# on-disk plaintext, load them at login time, but have to type the pw each time
+# else.. what's the point?
 #[ -f ~/env-creds ] &&  eval `ansible-vault view env-creds`
 
 # Activate github cli
@@ -308,7 +327,7 @@ _vaultgrep(){
     _searchfor="$1"
     _vaultfile="$2"
 
-    OUTPUT=$(ansible-vault view "$_vaultfile" | grep "$_searchfor")
+    OUTPUT=$(ansible-vault view "$_vaultfile" 2>&1 | grep -v CryptographyDeprecationWarning | grep "$_searchfor")
 
     if [ -n "$OUTPUT" ]; then
         echo
@@ -322,12 +341,14 @@ vaultgrep()
     [ -z "$1" ] && echo "# ERROR: Need a search string!" && return 1
     searchfor="$1"
     if [ -z "$2" ]; then
-        [ -n "$VAULTSCANBASE" ] && pushd "$VAULTSCANBASE"
-        [ -f "$VAULTS_LIST_FILE" ] || vaultscan
-        while read -r vaultfile
+        #[ -n "$VAULTSCANBASE" ] && pushd "$VAULTSCANBASE"
+        #[ -f "$VAULTS_LIST_FILE" ] || vaultscan
+        #while read -r vaultfile
+        for vaultfile in $(gg -H '$ANSIBLE_VAULT' * | cut -f1 -d ':')
         do
             _vaultgrep "$searchfor" "$vaultfile"
-        done < $VAULTS_LIST_FILE
+        done
+        # done < $VAULTS_LIST_FILE
         [ -n "$VAULTSCANBASE" ] && popd
     else
         vaultfile="$2"
@@ -354,6 +375,7 @@ if command -v pyenv 1>/dev/null 2>&1; then
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
 fi
+
 nodever(){
     [ -z "$NONODEPATH" ] && export NONODEPATH="$PATH"
     if [ "$1" == "10" -o "$1" == "lts" ]; then
@@ -372,7 +394,57 @@ nodever(){
    fi
 }
 
-syncrestart()
-{
-nssh $1 'sudo  sv force-stop /etc/sv/*; sudo /etc/init.d/proxysql stop; sudo /etc/init.d/proxysql start; sudo sv start /etc/sv/*'
+# git delete current branch and change to <branch>
+gdcb(){
+    if [ -z "$1" ]; then
+    echo "usage:"
+    echo
+    echo "  $0 <destinaion branch name>"
+    echo
+    echo " Example:  $0 main  (will delete current branch and land you back on branch 'main')"
+    echo
+    else
+        BRANCH=`git rev-parse --abbrev-ref HEAD`
+        if [[ -z "$BRANCH" ]]; then
+            echo "## ERROR: must be in a git repo to delete a branch"
+        elif [[ "$BRANCH" == "HEAD" ]]; then
+            echo "## ERROR: must be on a named branch to delete the current branch"
+        elif [[ "$BRANCH" == "master" || "$BRANCH" == "main" || "$BRANCH" == "develop" ]]; then
+            echo "## ERROR: Not allowed to delete $BRANCH"
+        else
+            read -p "Are you sure you want to delete branch '$BRANCH'? [y/N]:" yesno
+            if [[ "yesYES" =~ $yesno ]]; then
+                git checkout $1 && git branch -D "$BRANCH"
+                if [ $? -eq 0 ]; then
+                :
+                fi
+            else
+                echo "you chose no"
+            fi
+        fi
+    fi
 }
+
+## fancy ctrl-r search
+#eval "$(mcfly init bash)"
+
+
+ssh-gen-pubkey()
+{
+    ssh-keygen -y -f "${1:-poo}" > "${1:-poo}.pub"
+}
+
+iam_profile_lookup()
+{
+    aws ec2 describe-iam-instance-profile-associations --query 'IamInstanceProfileAssociations[*].{InstanceId:InstanceId,Arn:IamInstanceProfile.Arn}' | jq -c ".[] | select(.Arn | contains(\"$1\"))"
+}
+
+# Grokability
+# php
+export PATH="~/.composer/vendor/bin:/usr/local/opt/php@7.4/sbin:/usr/local/opt/php@7.4/bin:$PATH"
+
+export HISTFILE=/Users/jerm/.bash_history
+
+# because fucking boto2 :(
+export BOTO_USE_ENDPOINT_HEURISTICS=true
+
